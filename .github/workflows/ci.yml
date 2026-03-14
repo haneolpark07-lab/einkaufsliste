@@ -1,0 +1,24 @@
+name: CI Pipeline
+#pipeline starte automatisch wenn code auf main gepushed wird
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+#code wird aus github geladen
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v3
+#docker image wird aus den backend ordner gebaut
+      - name: Docker Image bauen
+        run: docker build ./backend -t einkaufsliste-backend
+#prüfen ob backend code fehlerfrei ladbar ist
+      - name: Backend testen
+        run: |
+          cd backend
+          npm install
+          node -e "require('./db.js'); console.log('Backend-Code OK')"
+#wenn code auf github gepushed wird, wird automatisch ein Docker-Image aufgebaut -> Pipeline
